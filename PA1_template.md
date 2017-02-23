@@ -257,6 +257,7 @@ library(lattice)
 cleanData$day <- weekdays(cleanData$date)
 weekend <- c("Saturday", "Sunday")
 
+## Add dayType factor
 cleanData$dayType <- factor(cleanData$day %in% weekend, 
        levels=c(FALSE, TRUE), labels=c('weekday', 'weekend'))
 
@@ -265,7 +266,12 @@ stepsSummary <- ddply(cleanData, .(interval, dayType),
                              summarize, avgSteps=mean(steps))
 
 ## Plot average steps per interval weekday vs weekend
-xyplot(avgSteps ~ interval | dayType, data = stepsSummary, type = "l", ylab = "Steps", xlab = "Interval", main = "Weekend Versus Weekday Steps", layout = c(1,2))
+xyplot(avgSteps ~ interval | dayType, data = stepsSummary, 
+       type = "l", 
+       ylab = "Steps", 
+       xlab = "Interval", 
+       main = "Weekend Versus Weekday Steps", 
+       layout = c(1,2))
 ```
 
 ![](PA1_template_files/figure-html/unnamed-chunk-11-1.png)<!-- -->
