@@ -252,25 +252,20 @@ hist(stepsSummaryWithNA$total, main = "(Non-Imputed) Steps per Day", xlab = "Ste
 
 
 ```r
+library(lattice)
 ## Add new column with day name
 cleanData$day <- weekdays(cleanData$date)
-weekday <- c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday")
 weekend <- c("Saturday", "Sunday")
 
-## Subset data by weekend and weekday
-weekdayData <- cleanData[cleanData$day %in% weekday,]
-weekendData <- cleanData[cleanData$day %in% weekend,]
+cleanData$dayType <- factor(cleanData$day %in% weekend, 
+       levels=c(FALSE, TRUE), labels=c('weekday', 'weekend'))
 
 ## Summarize weekend and weekday data mean steps per interval
-stepsSummaryWeekday <- ddply(weekdayData, .(interval), summarize, avgSteps=mean(steps))
-stepsSummaryWeekend <- ddply(weekendData, .(interval), summarize, avgSteps=mean(steps))
+stepsSummary <- ddply(cleanData, .(interval, dayType), 
+                             summarize, avgSteps=mean(steps))
 
 ## Plot average steps per interval weekday vs weekend
-par(mfrow = c(1,2))
-plot(avgSteps ~ interval, stepsSummaryWeekday, type = "l", 
-     ylab = "Steps", xlab = "Interval", main = "Weekday Activity")
-plot(avgSteps ~ interval, stepsSummaryWeekend, type = "l", 
-     ylab = "Steps", xlab = "Interval", main = "Weekend Activity")
+xyplot(avgSteps ~ interval | dayType, data = stepsSummary, type = "l", ylab = "Steps", xlab = "Interval", main = "Weekend Versus Weekday Steps", layout = c(1,2))
 ```
 
 ![](PA1_template_files/figure-html/unnamed-chunk-11-1.png)<!-- -->
